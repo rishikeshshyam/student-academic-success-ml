@@ -138,7 +138,7 @@ The application provides:
 
 The application loads the saved pipelines from the `model/` folder. It does not retrain the models or fit preprocessing steps on uploaded test data. The uploaded CSV must contain all 36 input features and the `Target` column.
 
-**Local application status:** Tested successfully on the project owner's Windows laptop.  
+**Local application status:** Tested successfully.
 **Live Streamlit Community Cloud URL:** <https://student-academic-success-ml-esmwbysnbxtatxxx3snic3.streamlit.app/>
 
 ## How to Run the Project
