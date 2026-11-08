@@ -1,6 +1,6 @@
 # Student Academic Performance Classification
 
-A multiclass machine learning project that compares five classification algorithms to classify students' academic outcomes as **Dropout**, **Enrolled**, or **Graduate**. The project includes data preprocessing, model training, evaluation, saved models, and a Streamlit application for evaluating held-out test data.
+A multiclass machine learning project that compares five classification algorithms to classify students' academic outcomes as **Dropout**, **Enrolled**, or **Graduate**. The project covers data preparation, model training, evaluation, saved model pipelines, and a Streamlit application for evaluating held-out test data.
 
 ## a. Problem Statement
 
@@ -57,14 +57,13 @@ The 36 input features are handled in two groups:
 - **17 categorical features:** integer-coded categories such as course, application mode, previous qualification, nationality, parents' qualification and occupation, and binary attributes.
 - **19 numerical or ordinal features:** grades, age, application order, curricular-unit counts, unemployment rate, inflation rate and GDP.
 
-The preprocessing steps are included inside each Scikit-learn Pipeline:
+The preprocessing is included in Scikit-learn Pipelines:
 
-- Categorical features: most-frequent imputation followed by one-hot encoding.
-- Numerical features: median imputation followed by standard scaling.
-- **Gaussian Naive Bayes is the exception.** It uses only the 19 numerical features (median imputation and scaling). Gaussian Naive Bayes assumes continuous inputs, and when it was given the one-hot encoded columns it collapsed to an accuracy of 0.2441 by predicting almost every student as `Enrolled`.
-- The preprocessing steps are fitted on the training data only and then applied to the held-out test data.
+- For Logistic Regression, Decision Tree, KNN and SVM, categorical features are imputed using the most frequent value and one-hot encoded. Numerical features are median-imputed and standard-scaled.
+- For Gaussian Naive Bayes, the implementation uses the 19 numerical features with median imputation and standard scaling. The categorical features are not supplied to this model. This is a modelling choice made for this experiment, so its results should be interpreted with that difference in input features in mind.
+- Preprocessing steps are fitted on the training data only and then applied to the held-out test data.
 
-The supplied CSV files were checked before model training. The complete dataset had no missing cells or duplicate rows in the checks performed for this project.
+The supplied CSV data was checked before modelling. The complete dataset had no missing cells or duplicate rows in the checks performed for this project.
 
 ## c. GitHub Repository Link
 
@@ -93,7 +92,7 @@ The following five classification algorithms were trained using `train_data.csv`
 
 ### Model comparison table
 
-The values below are from the successful local Windows execution of `train_models.py` on 8 November 2026. Values are rounded to four decimal places.
+The values below are from the successful BITS Virtual Lab execution of `train_models.py` on 8 November 2026. Values are rounded to four decimal places.
 
 | ML Model Name | Accuracy | AUC | Precision | Recall | F1 | MCC |
 |---|---:|---:|---:|---:|---:|---:|
@@ -107,12 +106,12 @@ The values below are from the successful local Windows execution of `train_model
 
 | ML Model Name | Observation about model performance |
 |---|---|
-| Logistic Regression | Accuracy 0.7819 and the highest AUC (0.8876), with macro F1 0.7068. Training accuracy is 0.810, so the gap to test accuracy is small and the model generalises well. Recall is 0.928 for Graduate and 0.782 for Dropout, but only 0.377 for Enrolled, because 66 of the 159 Enrolled students were predicted as Graduate. It is the simplest, fastest and most interpretable model, and its saved file is only about 16 KB. |
-| Decision Tree | Weakest of the five on accuracy (0.6655), AUC (0.7187), F1 (0.6078) and MCC (0.4620). The tree is unpruned (depth 31) and reaches 100% training accuracy against 66.6% test accuracy, which is clear overfitting. It confuses Graduates with the other two classes: 44 Graduates were predicted as Dropout and 66 as Enrolled. Limiting `max_depth` or pruning would likely help. |
-| KNN | Accuracy 0.7040, AUC 0.7956, F1 0.6242. It has the lowest Enrolled recall (0.314), with 84 of 159 Enrolled students predicted as Graduate, and it leans toward the majority class (Graduate recall 0.878). Distance-based methods are probably hurt here by the many one-hot columns, which dilute the distances. |
-| Gaussian Naive Bayes | Accuracy 0.6904, AUC 0.7803, F1 0.6336, MCC 0.4978, behind Logistic Regression and SVM because its independence assumption does not hold for correlated academic features. It has the best Enrolled recall of all five models (0.484) but the weakest Dropout recall (0.560). An earlier run using one-hot encoded features gave only 0.2441 accuracy, because Gaussian Naive Bayes assumes continuous features; restricting it to the numerical columns fixed this. |
-| Support Vector Machine | Accuracy 0.7819 with the highest macro Precision (0.7411), F1 (0.7088) and MCC (0.6393), and an AUC of 0.8872, almost identical to Logistic Regression. It has the best Graduate recall (0.950) and mislabels only 7 Graduates as Dropout. Enrolled recall is still just 0.403. The RBF kernel adds almost nothing over the linear model, which suggests the classes are largely linearly separable. Its saved file is about 4 MB, against about 16 KB for Logistic Regression. |
-| **Overall winner for this dataset** | **Support Vector Machine**, based on the highest macro F1, Precision and MCC. Logistic Regression is a near tie with the best AUC and is far lighter, so it is the better choice when interpretability or model size matters. Every model struggles with the Enrolled class (recall 0.31 to 0.48), because it is the minority class (about 18% of records) and an in-between outcome. Using `class_weight="balanced"` is a sensible next step. |
+| Logistic Regression | It achieved an accuracy of 0.7819 and the highest AUC of 0.8876. Its macro F1 score was 0.7068. It performed strongly overall, although the Enrolled class remains more difficult to classify than the other outcomes. |
+| Decision Tree | It achieved an accuracy of 0.6655, an AUC of 0.7187 and a macro F1 score of 0.6078. These were the lowest Accuracy, AUC, F1 and MCC values among the five models in this experiment. |
+| KNN | It achieved an accuracy of 0.7040 and an AUC of 0.7956. Its macro F1 score was 0.6242, placing it above the Decision Tree but below Logistic Regression and SVM on this test set. |
+| Gaussian Naive Bayes | It achieved an accuracy of 0.6904, an AUC of 0.7803 and a macro F1 score of 0.6336. Its performance was between KNN and the two strongest models on several metrics. It used only the 19 numerical features, unlike the other four models, which used all 36 features. This difference should be considered when comparing the results. |
+| Support Vector Machine | It achieved an accuracy of 0.7819, the highest macro Precision (0.7411), macro F1 (0.7088) and MCC (0.6393). Its AUC of 0.8872 was very close to Logistic Regression. It was the strongest model on the selected macro F1 and MCC measures, although the difference from Logistic Regression was small. |
+| **Overall winner for this dataset** | **Support Vector Machine** is selected based on its highest macro F1, macro Precision and MCC. Logistic Regression achieved the highest AUC and had very similar overall performance. The difference between these two models is small. The Enrolled class remains a challenge for the models, so class-wise performance should be considered along with the aggregate metrics. |
 
 ### Saved evaluation files
 
@@ -138,8 +137,10 @@ The application provides:
 
 The application loads the saved pipelines from the `model/` folder. It does not retrain the models or fit preprocessing steps on uploaded test data. The uploaded CSV must contain all 36 input features and the `Target` column.
 
-**Local application status:** Tested successfully
+**BITS Virtual Lab execution:** Completed successfully on 8 November 2026.  
+**Streamlit application:** Deployed on Streamlit Community Cloud.
 
+**GitHub repository:** <https://github.com/rishikeshshyam/student-academic-success-ml>  
 **Live Streamlit Community Cloud URL:** <https://student-academic-success-ml-esmwbysnbxtatxxx3snic3.streamlit.app/>
 
 ## How to Run the Project
@@ -182,29 +183,24 @@ The main project files are organized as follows:
 
 ```text
 Student Academic Success/
-│
 ├── app.py
 ├── train_models.py
 ├── requirements.txt
 ├── README.md
 ├── train_data.csv
 ├── test_data.csv
-│
 ├── model/
 │   ├── logistic_regression.joblib
 │   ├── decision_tree.joblib
 │   ├── knn.joblib
 │   ├── naive_bayes.joblib
 │   └── support_vector_machine.joblib
-│
 ├── results/
 │   ├── model_comparison.csv
 │   ├── *_confusion_matrix.csv
 │   └── *_classification_report.csv
-│
-├── Dataset/
-│   └── Student_Academic_Success.xlsx
-
+└── Dataset/
+    └── Student_Academic_Success.xlsx
 ```
 
 ## Dataset Reference
