@@ -68,9 +68,9 @@ The supplied CSV files were checked before model training. The complete dataset 
 
 ## c. GitHub Repository Link
 
-**GitHub repository:** `TO BE ADDED AFTER THE REPOSITORY IS CREATED`
+**GitHub repository:** <https://github.com/rishikeshshyam/student-academic-success-ml>
 
-The repository will contain the source code, requirements file, README, held-out test CSV, saved models, and evaluation outputs.
+The repository contains the source code, requirements file, README, held-out test CSV, saved models, and evaluation outputs.
 
 ## d. Models Used and Evaluation
 
@@ -139,7 +139,7 @@ The application provides:
 The application loads the saved pipelines from the `model/` folder. It does not retrain the models or fit preprocessing steps on uploaded test data. The uploaded CSV must contain all 36 input features and the `Target` column.
 
 **Local application status:** Tested successfully on the project owner's Windows laptop.  
-**Live Streamlit Community Cloud URL:** `TO BE ADDED AFTER DEPLOYMENT`
+**Live Streamlit Community Cloud URL:** <https://student-academic-success-ml-esmwbysnbxtatxxx3snic3.streamlit.app/>
 
 ## How to Run the Project
 
